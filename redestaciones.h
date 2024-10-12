@@ -2,30 +2,19 @@
 #define REDESTACIONES_H
 
 #include <iostream>
-#include <cstdlib>  // Para rand() y srand()
-#include <ctime>    // Para time()
-#include <string>   // Para usar std::string
+#include <cstdlib>
+#include <ctime>
+#include <string>
+#include "estaciongasolina.h"
+
 using namespace std;
-
-// Definición de la clase Estacion
-class Estacion {
-public:
-    string nombre;  // Atributo de ejemplo para la estación
-
-    // Constructor
-    Estacion(string nombreEstacion = "Estación Anónima") : nombre(nombreEstacion) {}
-
-    // Método para mostrar información de la estación
-    void mostrarInformacion() const {
-        cout << "Estación: " << nombre << endl;
-    }
-};
 
 class RedEstaciones {
 private:
-    short int precios[3][3]; // [regiones][tipos de combustible]
-    Estacion* estaciones;     // Arreglo dinámico de estaciones
-    int numEstaciones;        // Número total de estaciones
+    short int precios[3][3];  // [regiones][tipos de combustible]
+    Estacion* estaciones;      // Arreglo dinámico de estaciones
+    int numEstaciones;         // Número total de estaciones
+    const string tipos_combustible[3] = {"Regular", "Premium", "EcoExtra"}; // Tipos de             combustible
 
 public:
     // Constructor
@@ -35,13 +24,16 @@ public:
     ~RedEstaciones();
 
     // Método para agregar una estación
-    void agregarEstacion(string nombreEstacion);
+    void agregarEstacion(const string& nombreEstacion, short int codident, const string& gerente, const string& region, short int coordenadas);
 
     // Método para mostrar el número de estaciones
     void mostrarEstaciones() const;
 
     // Método para generar un número aleatorio
     int generarNumeroAleatorio(int min, int max);
+    void mostrarPrecios() const;
+    void eliminarEstacion(short int codident);
+    Estacion* obtenerEstacion(short int codident); // Declaración del método
 };
 
 #endif // REDESTACIONES_H

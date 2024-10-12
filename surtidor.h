@@ -1,20 +1,23 @@
-  #ifndef SURTIDOR_H
-  #define SURTIDOR_H
-  #include <iostream>
+#ifndef SURTIDOR_H
+#define SURTIDOR_H
 
-  using namespace std;
-  class surtidor
-  {
-  private:
-      short int identsurt;
-      string tipomaquina;
-  public:
-      surtidor();
+#include <iostream>
+#include <string>
 
-      string getTipomaquina() const;
-      void setTipomaquina(string _tipomaquina);
-      short getIdentsurt() const;
-      void setIdentsurt(short _identsurt);
-  };
+using namespace std;
 
-  #endif // SURTIDOR_H
+class Surtidor {
+private:
+    short int identsurt;
+    string tipomaquina;
+
+public:
+    Surtidor();
+
+    string getTipomaquina() const;
+    void setTipomaquina(const string& _tipomaquina);
+    short getIdentsurt() const;
+    void setIdentsurt(short _identsurt);
+};
+
+#endif // SURTIDOR_H
