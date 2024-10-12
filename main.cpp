@@ -1,9 +1,24 @@
 #include <iostream>
+#include "redestaciones.h"
 
-using namespace std;
+int main() {
+    // Crea una red con 2 estaciones inicialmente
+    RedEstaciones red(0);
 
-int main()
-{
-    cout << "Hello World!" << endl;
+    // Mostrar el número inicial de estaciones
+    red.mostrarEstaciones();
+
+    // Agregar una estación
+    red.agregarEstacion("Estación Norte");
+
+    // Mostrar el número actual de estaciones
+    red.mostrarEstaciones();
+
+    // Agregar otra estación
+    red.agregarEstacion("Estación Sur");
+
+    // Mostrar el número actual de estaciones
+    red.mostrarEstaciones();
+
     return 0;
 }
