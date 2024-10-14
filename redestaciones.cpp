@@ -8,7 +8,7 @@ RedEstaciones::RedEstaciones(int numEstaciones) : numEstaciones(numEstaciones) {
     // Inicializa precios aleatorios
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
-            precios[i][j] = generarNumeroAleatorio(11000, 13000);
+            precios[i][j] = generarNumeroAleatorio(3000, 5000);
         }
     }
 }
@@ -59,10 +59,24 @@ void RedEstaciones::mostrarPrecios() const {
     for (int i = 0; i < 3; i++) {
         cout << "Precios de la región " << (i == 0 ? "Norte" : i == 1 ? "Centro" : "Sur") << ":" << endl;
         for (int j = 0; j < 3; j++) {
-            cout << tipos_combustible[j] << ": " << precios[i][j] << endl;
+            cout << tipos_combustible[j] << ": " << precios[i][j] << " l"<<endl;
         }
         cout << endl;
     }
+}
+
+
+short int RedEstaciones::getPrecio(int region, int tipoCombustible) const {
+    if (region < 0 || region >= 2 || tipoCombustible < 0 || tipoCombustible >= 2) {
+        cout << "Índices fuera de rango." << endl;
+        return -1;  // Devuelve un valor inválido si los índices no son correctos
+    }
+    return precios[region][tipoCombustible];
+}
+
+// Implementación del getter para obtener toda la matriz de precios
+const short int (*RedEstaciones::getPrecios() const)[3] {
+    return precios;
 }
 
 // Método para eliminar estación

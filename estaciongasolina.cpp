@@ -1,7 +1,12 @@
 #include "estaciongasolina.h"
 #include <cstdlib>
-#include <ctime>
 #include <iostream>
+#include <string>
+#include <ctime>
+#include <fstream>
+#include <iomanip>
+#include "surtidor.h"
+
 
 
 Estacion::Estacion() : nombre(""), codident(0), gerente(""), region(""), coordenadas(0), numMaquinas(0), surtidores(nullptr) {}
@@ -54,6 +59,25 @@ short Estacion::getCoordenadas() const {
 void Estacion::setCoordenadas(short _coordenadas) {
     coordenadas = _coordenadas;
 }
+short Estacion::getNumMaquinas() const
+{
+    return numMaquinas;  
+}
+
+Surtidor* Estacion::getSurtidores() {
+    return surtidores;  
+}
+const int* Estacion::getCapacidadTanque() const {
+    return capacidadTanque;  // Retorna el puntero al arreglo de capacidades
+}
+
+int Estacion::getCapacidadTanque(int indice) const {
+    if (indice < 0 || indice > 2) {
+        cout << "Índice fuera de rango. Debe estar entre 0 y 2." << endl;
+        return -1;  // Devuelve -1 si el índice no es válido
+    }
+    return capacidadTanque[indice];
+}
 
 void Estacion::mostrarInformacion() const {
     cout << "Nombre: " << getNombre()
@@ -83,3 +107,63 @@ void Estacion::crearMaquinas() {
         cout << "Máquina " << surtidores[i].getIdentsurt() << ": " << surtidores[i].getTipomaquina() << endl; // Imprimir el ID y tipo de surtidor
     }
 }
+
+void Estacion::agregar_eliminar_surtidor(bool agregar, const Surtidor& nuevoSurtidor, int indiceEliminar) {
+    if (agregar) {
+        // Lógica para agregar un surtidor
+        Surtidor* nuevosSurtidores = new Surtidor[numMaquinas + 1];
+
+        // Copiar los surtidores existentes
+        for (short int i = 0; i < numMaquinas; ++i) {
+            nuevosSurtidores[i] = surtidores[i];
+        }
+
+        // Agregar el nuevo surtidor al final
+        nuevosSurtidores[numMaquinas] = nuevoSurtidor;
+        numMaquinas++;  // Incrementar el número de surtidores
+
+        // Liberar el arreglo antiguo y asignar el nuevo
+        delete[] surtidores;
+        surtidores = nuevosSurtidores;
+
+        cout << "Surtidor agregado correctamente." << endl;
+    } else {
+        // Lógica para eliminar un surtidor en una posición específica
+        if (numMaquinas > 0 && indiceEliminar >= 0 && indiceEliminar < numMaquinas) {
+            // Reducir el tamaño del arreglo de surtidores
+            Surtidor* nuevosSurtidores = new Surtidor[numMaquinas - 1];
+
+            // Copiar todos los surtidores excepto el que se va a eliminar
+            for (short int i = 0, j = 0; i < numMaquinas; ++i) {
+                if (i != indiceEliminar) {  // Saltar el surtidor a eliminar
+                    nuevosSurtidores[j] = surtidores[i];
+                    j++;  // Incrementar j solo si copiamos un surtidor
+                }
+            }
+
+            numMaquinas--;  // Reducir el número de surtidores
+
+            // Liberar el arreglo antiguo y asignar el nuevo
+            delete[] surtidores;
+            surtidores = nuevosSurtidores;
+
+            cout << "Surtidor eliminado correctamente." << endl;
+        } else {
+            cout << "Índice inválido o no hay surtidores para eliminar." << endl;
+        }
+    }
+}
+
+
+void Estacion::asignarTanques() {
+    // Generar capacidades aleatorias entre 100 y 200 litros para cada categoría
+    for (int i = 0; i < 3; i++) {
+        capacidadTanque[i] = rand() % 101 + 100;  // Genera entre 100 y 200
+    }
+
+    cout << "Capacidades de tanque asignadas para la estación " << nombre << ":" << endl;
+    cout << "Regular: " << capacidadTanque[0] << " litros" << endl;
+    cout << "Premium: " << capacidadTanque[1] << " litros" << endl;
+    cout << "EcoExtra: " << capacidadTanque[2] << " litros" << endl;
+}
+

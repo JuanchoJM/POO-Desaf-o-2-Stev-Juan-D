@@ -3,7 +3,10 @@
 
 #include <iostream>
 #include <string>
+#include <iomanip> 
 #include "surtidor.h"
+
+
 
 using namespace std;
 
@@ -16,10 +19,11 @@ private:
     short int coordenadas;
     short int numMaquinas; // Número de surtidores
     Surtidor* surtidores; // Arreglo dinámico de surtidores
- 
-    
+    int capacidadTanque[3];
+
 
 public:
+
     Estacion();
     Estacion(string _nombre, short int _codident, string _gerente, string _region, short int _coordenadas);
     ~Estacion();
@@ -38,9 +42,18 @@ public:
 
     short getCoordenadas() const;
     void setCoordenadas(short _coordenadas);
+    short getNumMaquinas() const;
+    Surtidor* getSurtidores();
+    const int* getCapacidadTanque() const;
+    // Getter para obtener la capacidad de un tanque específico
+    int getCapacidadTanque(int indice) const;
 
     void mostrarInformacion() const; // Método para mostrar la información de la estación
     void crearMaquinas();
+    void agregar_eliminar_surtidor(bool agregar, const Surtidor& nuevoSurtidor, int                 indiceEliminar = -1);
+
+    void asignarTanques();
+  
 };
 
 #endif // ESTACIONGASOLINA_H

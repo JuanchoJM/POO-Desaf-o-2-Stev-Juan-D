@@ -17,6 +17,7 @@ private:
     const string tipos_combustible[3] = {"Regular", "Premium", "EcoExtra"}; // Tipos de             combustible
 
 public:
+  
     // Constructor
     RedEstaciones(int numEstaciones);
 
@@ -28,12 +29,16 @@ public:
 
     // Método para mostrar el número de estaciones
     void mostrarEstaciones() const;
+   // Getter para un precio específico
+    short int getPrecio(int region, int tipoCombustible) const;
+   // Getter para obtener toda la matriz de precios
+       const short int (*getPrecios() const)[3];
 
     // Método para generar un número aleatorio
     int generarNumeroAleatorio(int min, int max);
-    void mostrarPrecios() const;
+    void mostrarPrecios() const ;
     void eliminarEstacion(short int codident);
     Estacion* obtenerEstacion(short int codident); // Declaración del método
-};
+    };
 
 #endif // REDESTACIONES_H

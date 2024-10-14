@@ -3,6 +3,8 @@
 // Constructor
 Surtidor::Surtidor() : identsurt(0), tipomaquina("") {}
 
+Surtidor::Surtidor(short int id, const string& tipo) : identsurt(id), tipomaquina(tipo) {}
+
 string Surtidor::getTipomaquina() const {
     return tipomaquina;
 }
@@ -18,3 +20,5 @@ short Surtidor::getIdentsurt() const {
 void Surtidor::setIdentsurt(short _identsurt) {
     identsurt = _identsurt;
 }
+
+

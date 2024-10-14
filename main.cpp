@@ -5,6 +5,7 @@ using namespace std;
 
 int main() {
     RedEstaciones red(0);
+    Estacion sim;
     string nombre;
     short int codident;
     string gerente;
@@ -83,16 +84,68 @@ int main() {
                 break;
             }
 
-            case 5: {break;} // Por ejemplo, para agregar un surtidor
-               
+            case 5: {  // Agregar surtidor
+                cout << "Ingrese el código de identificación de la estación: ";
+                cin >> codident;
 
+                Estacion* estacion = red.obtenerEstacion(codident);  // Obtener la estación
+                if (estacion != nullptr) {
+                    // Crear un nuevo surtidor
+                    Surtidor nuevoSurtidor;
 
+                    // Pedir el número del surtidor y el tipo de combustible
+                    short int numeroSurtidor;
+                    string tipoCombustible;
 
-            case 6: {
-                // Lógica para eliminar surtidor
-                cout << "Funcionalidad para eliminar surtidor aún no implementada." << endl;
+                    cout << "Ingrese el número del surtidor: ";
+                    cin >> numeroSurtidor;
+                    nuevoSurtidor.setIdentsurt(numeroSurtidor);  // Establecer el ID del surtidor
+
+                    cout << "Ingrese el tipo de combustible: ";
+                    cin.ignore();  // Limpiar el buffer de entrada
+                    getline(cin, tipoCombustible);  // Leer tipo de combustible
+                    nuevoSurtidor.setTipomaquina(tipoCombustible);  // Establecer el tipo de máquina
+
+                    // Agregar el surtidor a la estación
+                    estacion->agregar_eliminar_surtidor(true, nuevoSurtidor);  // true para agregar
+
+                } else {
+                    cout << "Estación no encontrada." << endl;
+                }
                 break;
             }
+
+            
+            
+            case 6: {  // Eliminar surtidor
+                cout << "Ingrese el código de identificación de la estación: ";
+                cin >> codident;
+
+                Estacion* estacion = red.obtenerEstacion(codident);
+                if (estacion != nullptr) {
+                    cout << "Surtidores disponibles:" << endl;
+
+                    // Imprimir los surtidores con sus detalles
+                    Surtidor* surtidores = estacion->getSurtidores();
+                    for (short int i = 0; i < estacion->getNumMaquinas(); ++i) {
+                        cout << i << ". Surtidor " << surtidores[i].getIdentsurt() 
+                             << " - Tipo: " << surtidores[i].getTipomaquina() << endl;  // Imprime detalles del surtidor
+                    }
+
+                    int indiceEliminar;
+                    cout << "Seleccione el número del surtidor a eliminar: ";
+                    cin >> indiceEliminar;
+
+                    // Ajustar el índice ya que el usuario selecciona un número basado en 1
+                    estacion->agregar_eliminar_surtidor(false, Surtidor(), indiceEliminar);  // false para eliminar
+                } else {
+                    cout << "Estación no encontrada." << endl;
+                }
+                break;
+            }
+
+
+
 
             case 7: {
                 // Lógica para activar/desactivar surtidor
@@ -124,16 +177,26 @@ int main() {
             }
 
             case 10: {
-                // Lógica para simular venta
-                cout << "Funcionalidad para simular venta aún no implementada." << endl;
+              
                 break;
             }
 
             case 11: {
-                // Lógica para asignar tanque
-                cout << "Funcionalidad para asignar tanque aún no implementada." << endl;
+                // Seleccionar estación y asignar tanques
+                cout << "Ingrese el código de identificación de la estación para asignar los tanques: ";
+                cin >> codident;
+                cin.ignore();  // Limpiar buffer de entrada
+
+                // Busca la estación y asigna los tanques
+                Estacion* estacion = red.obtenerEstacion(codident);  // Método que busca la estación
+                if (estacion != nullptr) {
+                    estacion->asignarTanques();  // Llama al método asignarTanques
+                } else {
+                    cout << "Estación no encontrada." << endl;
+                }
                 break;
             }
+
 
             case 0:
                 cout << "Saliendo del programa." << endl;
