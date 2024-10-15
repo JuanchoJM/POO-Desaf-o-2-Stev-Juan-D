@@ -5,7 +5,8 @@
 #include <ctime>
 #include <fstream>
 #include <iomanip>
-#include "surtidor.h"
+
+
 
 
 
@@ -67,6 +68,15 @@ short Estacion::getNumMaquinas() const
 Surtidor* Estacion::getSurtidores() {
     return surtidores;  
 }
+
+// Método para obtener un surtidor por su índice
+Surtidor& Estacion::getSurtidor(int index) {
+    if (index < 0 || index >= numMaquinas) {
+        throw std::out_of_range("Índice fuera de rango.");
+    }
+    return surtidores[index];  // Devuelve el surtidor correspondiente
+}
+
 const int* Estacion::getCapacidadTanque() const {
     return capacidadTanque;  // Retorna el puntero al arreglo de capacidades
 }
@@ -159,11 +169,54 @@ void Estacion::asignarTanques() {
     // Generar capacidades aleatorias entre 100 y 200 litros para cada categoría
     for (int i = 0; i < 3; i++) {
         capacidadTanque[i] = rand() % 101 + 100;  // Genera entre 100 y 200
+        capacidadInicialTanque[i] = capacidadTanque[i];
     }
 
     cout << "Capacidades de tanque asignadas para la estación " << nombre << ":" << endl;
     cout << "Regular: " << capacidadTanque[0] << " litros" << endl;
     cout << "Premium: " << capacidadTanque[1] << " litros" << endl;
     cout << "EcoExtra: " << capacidadTanque[2] << " litros" << endl;
+}
+
+
+void Estacion::restarLitros(int tipoCombustible, int litrosVendidos) {
+    if (tipoCombustible < 0 || tipoCombustible > 2) {
+        cout << "Tipo de combustible inválido." << endl;
+        return;
+    }
+
+    if (capacidadTanque[tipoCombustible] >= litrosVendidos) {
+        capacidadTanque[tipoCombustible] -= litrosVendidos;  // Restar los litros vendidos
+        cout << "Se han restado " << litrosVendidos << " litros de " 
+             << (tipoCombustible == 0 ? "Regular" : (tipoCombustible == 1 ? "Premium" : "EcoExtra")) 
+             << ". Capacidad restante: " << capacidadTanque[tipoCombustible] << " litros." << endl;
+    } else {
+        cout << "No hay suficiente combustible en el tanque para realizar la venta." << endl;
+    }
+}
+
+int Estacion::getTotalLitrosVendidos(int tipoCombustible) {
+    int total = 0;
+    for (int i = 0; i < numMaquinas; i++) {
+        total += surtidores[i].getLitrosVendidos(tipoCombustible);
+    }
+    return total;
+}
+bool Estacion::verificarFugas()  {
+    // Calcular el total de litros vendidos
+    int litrosVendidos = getTotalLitrosVendidos(0) + getTotalLitrosVendidos(1) + getTotalLitrosVendidos(2);
+
+    // Calcular el total de litros almacenados disponibles
+    int litrosAlmacenados = getCapacidadTanque(0)+getCapacidadTanque(1)+getCapacidadTanque(2);
+
+    // Sumar los litros vendidos y almacenados
+    int totalLitros = litrosVendidos + litrosAlmacenados;
+
+    // Calcular el 95% de la capacidad inicial
+    int capacidadTotalInicial = capacidadInicialTanque[0] + capacidadInicialTanque[1] + capacidadInicialTanque[2];
+    int umbralFuga = 0.95 * capacidadTotalInicial;
+
+    // Verificar si hay una fuga
+    return totalLitros < umbralFuga;
 }
 

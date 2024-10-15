@@ -1,5 +1,6 @@
 #include "redestaciones.h"
-
+#include "estaciongasolina.h"
+#include "surtidor.h"
 // Constructor: inicializa el arreglo de estaciones
 RedEstaciones::RedEstaciones(int numEstaciones) : numEstaciones(numEstaciones) {
     srand(static_cast<unsigned int>(time(0))); // Inicializa la semilla una vez
@@ -36,9 +37,10 @@ void RedEstaciones::agregarEstacion(const string& nombreEstacion, short int codi
 
     // Asigna el nuevo arreglo a la clase y aumenta el contador de estaciones
     estaciones = nuevoArreglo;
-    numEstaciones++;
+    numEstaciones++;//modifica el atributo numEstaciones
 
-    cout << "Estación '" << nombreEstacion << "' agregada. Ahora hay " << numEstaciones << " estaciones." << endl;
+
+    cout << "Estación '" << nombreEstacion << "' agregada. Ahora hay " << numEstaciones << "        estaciones." << endl;
 }
 
 // Método para mostrar el número de estaciones
@@ -66,13 +68,32 @@ void RedEstaciones::mostrarPrecios() const {
 }
 
 
-short int RedEstaciones::getPrecio(int region, int tipoCombustible) const {
-    if (region < 0 || region >= 2 || tipoCombustible < 0 || tipoCombustible >= 2) {
-        cout << "Índices fuera de rango." << endl;
-        return -1;  // Devuelve un valor inválido si los índices no son correctos
-    }
-    return precios[region][tipoCombustible];
-}
+        short int RedEstaciones::getPrecio(const string& region, int tipoCombustible) const {
+            int regionIndex;
+
+            // Convertir la región a un índice correspondiente
+            if (region == "norte") {
+                regionIndex = 0;
+            } else if (region == "centro") {
+                regionIndex = 1;
+            } else if (region == "sur") {
+                regionIndex = 2;
+            } else {
+                cout << "Región inválida." << endl;
+                return -1;  // Devuelve un valor inválido si la región no es correcta
+            }
+
+            // Verificar que el tipo de combustible esté dentro del rango esperado (0 a 2)
+            if (tipoCombustible < 0 || tipoCombustible > 2) {
+                cout << "Tipo de combustible fuera de rango." << endl;
+                return -1;  // Devuelve un valor inválido si el tipo de combustible no es correcto
+            }
+
+            // Retornar el precio de la matriz según la región y tipo de combustible
+            return precios[regionIndex][tipoCombustible];
+        }
+
+
 
 // Implementación del getter para obtener toda la matriz de precios
 const short int (*RedEstaciones::getPrecios() const)[3] {
@@ -109,6 +130,7 @@ void RedEstaciones::eliminarEstacion(short int codident) {
 
     // Liberar la memoria del arreglo anterior
     delete[] estaciones;
+    
 
     // Asignar el nuevo arreglo a la clase y reducir el contador de estaciones
     estaciones = nuevoArreglo;
@@ -118,9 +140,17 @@ void RedEstaciones::eliminarEstacion(short int codident) {
 }
 Estacion* RedEstaciones::obtenerEstacion(short int codident) {
     for (int i = 0; i < numEstaciones; i++) {
-        if (estaciones[i].getCodident() == codident) { // Suponiendo que tienes un getter para codident
+        if (estaciones[i].getCodident() == codident) { 
             return &estaciones[i]; // Retorna la dirección de la estación encontrada
         }
     }
     return nullptr; // Retorna nullptr si no se encuentra la estación
+}
+bool RedEstaciones::existeEstacion(short int codident)  {
+    for (int i = 0; i < numEstaciones; i++) {  
+        if (estaciones[i].getCodident() == codident) {
+            return true;  // La estación ya existe
+        }
+    }
+    return false;  // La estación no existe
 }

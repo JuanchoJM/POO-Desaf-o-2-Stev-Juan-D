@@ -6,7 +6,7 @@
 #include <ctime>
 #include <string>
 #include "estaciongasolina.h"
-
+#include "surtidor.h"
 using namespace std;
 
 class RedEstaciones {
@@ -30,7 +30,7 @@ public:
     // Método para mostrar el número de estaciones
     void mostrarEstaciones() const;
    // Getter para un precio específico
-    short int getPrecio(int region, int tipoCombustible) const;
+short int getPrecio(const string& region, int tipoCombustible) const;
    // Getter para obtener toda la matriz de precios
        const short int (*getPrecios() const)[3];
 
@@ -39,6 +39,7 @@ public:
     void mostrarPrecios() const ;
     void eliminarEstacion(short int codident);
     Estacion* obtenerEstacion(short int codident); // Declaración del método
+    bool existeEstacion(short int codident);
     };
 
 #endif // REDESTACIONES_H

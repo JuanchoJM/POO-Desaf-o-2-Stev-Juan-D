@@ -1,11 +1,11 @@
 #include <iostream>
 #include "redestaciones.h"
-
+#include "funciones.h"
+#include <fstream> 
 using namespace std;
 
 int main() {
     RedEstaciones red(0);
-    Estacion sim;
     string nombre;
     short int codident;
     string gerente;
@@ -31,6 +31,7 @@ int main() {
         cout << "9. Reportar cantidad de litros vendidos" << endl;
         cout << "10. Simular venta" << endl;
         cout << "11. Asignar tanque" << endl;
+        cout << "12. Verificar fugas" << endl; 
         cout << "0. Salir" << endl;
         cout << "Selecciona una opción: ";
         cin >> opcion;  // Lee la opción del usuario
@@ -40,22 +41,75 @@ int main() {
             case 1: {
                 // Pedir al usuario que ingrese los datos para una nueva estación
                 cout << "Ingrese el nombre de la estación: ";
-                getline(cin, nombre);  // Aquí usamos `getline` correctamente
+                getline(cin, *pnombre);
+                if (pnombre->empty()) {
+                    cout << "Error: El nombre de la estación no puede estar vacío." << endl;
+                    break;
+                }
 
                 cout << "Ingrese el código de identificación: ";
-                cin >> codident;
+                cin >> *pcodident;
+
+                // Validar que el código de identificación sea positivo
+                if (*pcodident <= 0) {
+                    cout << "Error: El código de identificación debe ser un número positivo." << endl;
+                    cin.ignore(); // Limpiar el buffer
+                    break;
+                }
                 cin.ignore();  // Para ignorar el carácter de nueva línea que queda en el buffer
 
                 cout << "Ingrese el nombre del gerente: ";
-                getline(cin, gerente);
+                getline(cin, *pgerente);
+                if (pgerente->empty()) {
+                    cout << "Error: El nombre del gerente no puede estar vacío." << endl;
+                    break;
+                }
 
-                cout << "Ingrese la región: ";
-                getline(cin, region);
+                // Seleccionar la región
+                cout << "Seleccione la región:\n";
+                cout << "0 - Norte\n";
+                cout << "1 - Centro\n";
+                cout << "2 - Sur\n";
+                int opcionRegion;
+                cin >> opcionRegion;
+
+                // Validar la opción de región
+                if (opcionRegion < 0 || opcionRegion > 2) {
+                    cout << "Error: Opción de región no válida. Debe ser 0, 1 o 2." << endl;
+                    cin.ignore(); // Limpiar el buffer
+                    break;
+                }
+
+                // Asignar el nombre de la región basado en la opción seleccionada
+                switch (opcionRegion) {
+                    case 0:
+                        *pregion = "norte";
+                        break;
+                    case 1:
+                        *pregion = "centro";
+                        break;
+                    case 2:
+                        *pregion = "sur";
+                        break;
+                }
 
                 cout << "Ingrese las coordenadas de la estación: ";
-                cin >> coordenadas;
+                cin >> *pcoordenadas;
 
-                // Agregar la nueva estación a la red de estaciones
+                // Validar que las coordenadas sean un número válido
+                if (*pcoordenadas < 0) {
+                    cout << "Error: Las coordenadas deben ser un número positivo." << endl;
+                    cin.ignore(); // Limpiar el buffer
+                    break;
+                }
+
+                // Verificar si la estación ya existe
+                if (red.existeEstacion(*pcodident)) {
+                    cout << "Error: Ya existe una estación con el código de identificación " << *pcodident << "." << endl;
+                    break;
+                }
+
+                // Agregar la nueva estación a la red de estaciones utilizando los apuntadores
                 red.agregarEstacion(*pnombre, *pcodident, *pgerente, *pregion, *pcoordenadas);
 
                 // Mostrar las estaciones
@@ -164,22 +218,60 @@ int main() {
                 
             }
 
+            
+
+            // Dentro de tu switch-case
             case 8: {
                 // Lógica para consultar histórico de transacciones
-                cout << "Funcionalidad para consultar histórico de transacciones aún no implementada." << endl;
+                ifstream archivo("registrotrans.txt");  // Abre el archivo en modo lectura
+
+                if (archivo.is_open()) {
+                    string linea;
+                    cout << "Histórico de transacciones:" << endl;
+                    while (getline(archivo, linea)) {  // Lee el archivo línea por línea
+                        cout << linea << endl;  // Imprime cada línea en la consola
+                    }
+                    archivo.close();  // Cierra el archivo
+                } else {
+                    cout << "No se pudo abrir el archivo de transacciones." << endl;
+                }
                 break;
             }
+
 
             case 9: {
-                // Lógica para reportar cantidad de litros vendidos
-                cout << "Funcionalidad para reportar cantidad de litros vendidos aún no implementada." << endl;
+                cout << "Ingrese el código de identificación de la estación: ";
+                cin >> codident;
+
+                Estacion* estacion = red.obtenerEstacion(codident);  // Obtener la estación
+                if (estacion != nullptr) {
+
+                    cout << "Total litros Regular vendidos: " << estacion->getTotalLitrosVendidos(0) << endl;
+                    cout << "Total litros Premium vendidos: " << estacion->getTotalLitrosVendidos(1) << endl;
+                    cout << "Total litros EcoExtra vendidos: " << estacion->getTotalLitrosVendidos(2) << endl;
+                } else {
+                    cout << "Estación no encontrada." << endl;
+                }
                 break;
             }
 
+
             case 10: {
-              
+                cout << "Simular venta" << endl;
+
+                cout << "Ingrese el código de identificación de la estación: ";
+                cin >> codident;
+
+                Estacion* estacion = red.obtenerEstacion(codident);  // Obtener la estación
+                if (estacion != nullptr) {
+                    simularventa(red, *estacion);  // Llama a la función de simular venta con la red y la estación
+                } else {
+                    cout << "Estación no encontrada." << endl;
+                }
                 break;
             }
+
+
 
             case 11: {
                 // Seleccionar estación y asignar tanques
@@ -191,6 +283,23 @@ int main() {
                 Estacion* estacion = red.obtenerEstacion(codident);  // Método que busca la estación
                 if (estacion != nullptr) {
                     estacion->asignarTanques();  // Llama al método asignarTanques
+                } else {
+                    cout << "Estación no encontrada." << endl;
+                }
+                break;
+            }
+
+            case 12: {  // Verificar fugas
+                cout << "Ingrese el código de identificación de la estación: ";
+                cin >> codident;
+
+                Estacion* estacion = red.obtenerEstacion(codident);  // Obtener la estación
+                if (estacion != nullptr) {
+                    if (estacion->verificarFugas()) {
+                        cout << "¡Advertencia! Se ha detectado una posible fuga." << endl;
+                    } else {
+                        cout << "No se han detectado fugas. El total de litros está dentro de los límites aceptables." << endl;
+                    }
                 } else {
                     cout << "Estación no encontrada." << endl;
                 }

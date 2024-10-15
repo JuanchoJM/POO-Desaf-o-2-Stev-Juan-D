@@ -21,4 +21,20 @@ void Surtidor::setIdentsurt(short _identsurt) {
     identsurt = _identsurt;
 }
 
+ // Método para agregar litros vendidos
+void Surtidor:: agregarLitrosVendidos(int tipoCombustible, int litros) {
+        if (tipoCombustible >= 0 && tipoCombustible < 3) {
+            litrosVendidos[tipoCombustible] += litros; // Suma los litros vendidos al total del tipo
+        }
+    }
+
+    // Método para obtener litros vendidos por tipo de combustible
+    int Surtidor::getLitrosVendidos(int tipoCombustible) const {
+        if (tipoCombustible >= 0 && tipoCombustible < 3) {
+            return litrosVendidos[tipoCombustible];
+        }
+        return 0; // Retorna 0 si el tipo no es válido
+    }
+
+
 

@@ -20,7 +20,7 @@ private:
     short int numMaquinas; // Número de surtidores
     Surtidor* surtidores; // Arreglo dinámico de surtidores
     int capacidadTanque[3];
-
+    int capacidadInicialTanque[3];
 
 public:
 
@@ -44,6 +44,7 @@ public:
     void setCoordenadas(short _coordenadas);
     short getNumMaquinas() const;
     Surtidor* getSurtidores();
+    Surtidor& getSurtidor(int index);
     const int* getCapacidadTanque() const;
     // Getter para obtener la capacidad de un tanque específico
     int getCapacidadTanque(int indice) const;
@@ -53,6 +54,9 @@ public:
     void agregar_eliminar_surtidor(bool agregar, const Surtidor& nuevoSurtidor, int                 indiceEliminar = -1);
 
     void asignarTanques();
+   void restarLitros(int tipoCombustible, int litrosVendidos);
+   int getTotalLitrosVendidos(int tipoCombustible);
+   bool verificarFugas();
   
 };
 
