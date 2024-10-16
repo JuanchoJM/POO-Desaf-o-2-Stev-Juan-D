@@ -51,6 +51,7 @@ public:
 
     void mostrarInformacion() const; // Método para mostrar la información de la estación
     void crearMaquinas();
+    void eliminarTodosLosSurtidores();
     void agregar_eliminar_surtidor(bool agregar, const Surtidor& nuevoSurtidor, int                 indiceEliminar = -1);
 
     void asignarTanques();

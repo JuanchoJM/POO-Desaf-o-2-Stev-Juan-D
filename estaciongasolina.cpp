@@ -10,12 +10,28 @@
 
 
 
-Estacion::Estacion() : nombre(""), codident(0), gerente(""), region(""), coordenadas(0), numMaquinas(0), surtidores(nullptr) {}
+Estacion::Estacion() 
+    : nombre("desconocido"), codident(0), gerente(""), region("norte"), coordenadas(0), numMaquinas(0), surtidores(nullptr) {
+         srand(static_cast<unsigned int>(time(0))); // Inicializar el generador de números aleatorios
+    // Inicializar las capacidades de los tanques a cero
+    for (int i = 0; i < 3; i++) {
+        capacidadTanque[i] = 0;  // Regular, Premium, EcoExtra
+        capacidadInicialTanque[i] = 0;  // Capacidades iniciales para posibles restablecimientos
+    }
+}
+
 
 Estacion::Estacion(string _nombre, short int _codident, string _gerente, string _region, short int _coordenadas)
     : nombre(_nombre), codident(_codident), gerente(_gerente), region(_region), coordenadas(_coordenadas), numMaquinas(0), surtidores(nullptr) {
     srand(static_cast<unsigned int>(time(0))); // Inicializar el generador de números aleatorios
+
+    // Inicializar las capacidades de los tanques a cero para verificacion de que no hallan sido asginados
+    for (int i = 0; i < 3; i++) {
+        capacidadTanque[i] = 0;  // Regular, Premium, EcoExtra
+        capacidadInicialTanque[i] = 0;  // Capacidades iniciales para posibles restablecimientos
+    }
 }
+
 
 Estacion::~Estacion() {
     delete[] surtidores; // Liberar la memoria del arreglo dinámico de surtidores
@@ -98,6 +114,11 @@ void Estacion::mostrarInformacion() const {
 }
 
 void Estacion::crearMaquinas() {
+    if (getNumMaquinas() > 0) {
+        cout << "Las máquinas surtidoras ya han sido activadas." << endl;
+        return;  // Salimos del método si ya hay surtidores
+    }
+
     numMaquinas = rand() % 11 + 2; // Generar un número aleatorio entre 2 y 12
     surtidores = new Surtidor[numMaquinas]; // Crear arreglo dinámico para los surtidores
 
@@ -117,6 +138,22 @@ void Estacion::crearMaquinas() {
         cout << "Máquina " << surtidores[i].getIdentsurt() << ": " << surtidores[i].getTipomaquina() << endl; // Imprimir el ID y tipo de surtidor
     }
 }
+
+void Estacion::eliminarTodosLosSurtidores() {
+    if (numMaquinas > 0) {
+        // Liberar la memoria de los surtidores (si están asignados dinámicamente)
+        delete[] surtidores; 
+        surtidores = nullptr;
+        // Actualizar el número de máquinas/surtidores a 0
+        numMaquinas = 0;
+
+        cout << "Todos los surtidores han sido eliminados y desactivados." << endl;
+    } else {
+        cout << "No hay surtidores para eliminar." << endl;
+    }
+}
+
+
 
 void Estacion::agregar_eliminar_surtidor(bool agregar, const Surtidor& nuevoSurtidor, int indiceEliminar) {
     if (agregar) {
@@ -166,6 +203,12 @@ void Estacion::agregar_eliminar_surtidor(bool agregar, const Surtidor& nuevoSurt
 
 
 void Estacion::asignarTanques() {
+    // Verificar si los tanques ya han sido asignados
+    if (capacidadTanque[0] > 20 || capacidadTanque[1] > 20 || capacidadTanque[2] > 20) {
+        cout << "Aun queda combustible disponible antes de recargar los tanques " << nombre << "." << endl;
+        return;  // Sale del método si los tanques ya han sido asignados
+    }
+
     // Generar capacidades aleatorias entre 100 y 200 litros para cada categoría
     for (int i = 0; i < 3; i++) {
         capacidadTanque[i] = rand() % 101 + 100;  // Genera entre 100 y 200
@@ -177,6 +220,7 @@ void Estacion::asignarTanques() {
     cout << "Premium: " << capacidadTanque[1] << " litros" << endl;
     cout << "EcoExtra: " << capacidadTanque[2] << " litros" << endl;
 }
+
 
 
 void Estacion::restarLitros(int tipoCombustible, int litrosVendidos) {

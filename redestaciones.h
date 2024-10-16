@@ -37,8 +37,11 @@ short int getPrecio(const string& region, int tipoCombustible) const;
     // Método para generar un número aleatorio
     int generarNumeroAleatorio(int min, int max);
     void mostrarPrecios() const ;
+    int getNumEstaciones() const ;
+    void setNumEstaciones(int nuevoNumero);
     void eliminarEstacion(short int codident);
     Estacion* obtenerEstacion(short int codident); // Declaración del método
+   Estacion* obtenerEstacion(int index);
     bool existeEstacion(short int codident);
     };
 

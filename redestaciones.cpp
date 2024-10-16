@@ -37,7 +37,7 @@ void RedEstaciones::agregarEstacion(const string& nombreEstacion, short int codi
 
     // Asigna el nuevo arreglo a la clase y aumenta el contador de estaciones
     estaciones = nuevoArreglo;
-    numEstaciones++;//modifica el atributo numEstaciones
+    setNumEstaciones(getNumEstaciones() + 1);
 
 
     cout << "Estación '" << nombreEstacion << "' agregada. Ahora hay " << numEstaciones << "        estaciones." << endl;
@@ -99,6 +99,17 @@ void RedEstaciones::mostrarPrecios() const {
 const short int (*RedEstaciones::getPrecios() const)[3] {
     return precios;
 }
+int RedEstaciones::getNumEstaciones() const {
+    return numEstaciones;
+}
+
+void RedEstaciones::setNumEstaciones(int nuevoNumero) {
+    if (nuevoNumero >= 0) { // Validar que el número no sea negativo
+        numEstaciones = nuevoNumero;
+    } else {
+        cout << "Error: El número de estaciones no puede ser negativo." << endl;
+    }
+}
 
 // Método para eliminar estación
 void RedEstaciones::eliminarEstacion(short int codident) {
@@ -117,6 +128,12 @@ void RedEstaciones::eliminarEstacion(short int codident) {
         return;
     }
 
+    // Verificar si la estación tiene surtidores activos
+    if (estaciones[indiceEliminar].getNumMaquinas() > 0) {
+        cout << "No se puede eliminar la estación. Aún tiene surtidores activos." << endl;
+        return;  // Salir del método sin eliminar la estación
+    }
+
     // Crear un nuevo arreglo dinámico con una estación menos
     Estacion* nuevoArreglo = new Estacion[numEstaciones - 1];
 
@@ -130,14 +147,14 @@ void RedEstaciones::eliminarEstacion(short int codident) {
 
     // Liberar la memoria del arreglo anterior
     delete[] estaciones;
-    
 
     // Asignar el nuevo arreglo a la clase y reducir el contador de estaciones
     estaciones = nuevoArreglo;
-    numEstaciones--;
+    setNumEstaciones(getNumEstaciones() - 1); 
 
     cout << "Estación con código identificador " << codident << " eliminada." << endl;
 }
+
 Estacion* RedEstaciones::obtenerEstacion(short int codident) {
     for (int i = 0; i < numEstaciones; i++) {
         if (estaciones[i].getCodident() == codident) { 
@@ -153,4 +170,10 @@ bool RedEstaciones::existeEstacion(short int codident)  {
         }
     }
     return false;  // La estación no existe
+}
+Estacion* RedEstaciones::obtenerEstacion(int index) {
+    if (index >= 0 && index < numEstaciones) {
+        return &estaciones[index]; // Devuelve un puntero a la estación en el índice especificado
+    }
+    return nullptr; // Si el índice es inválido, devuelve nullptr
 }
